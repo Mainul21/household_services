@@ -6,6 +6,7 @@ import "./index.css";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
+import RequestService from "./pages/RequestServices.jsx";
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
@@ -14,6 +15,7 @@ ReactDOM.createRoot(root).render(
       <Route path="/" element={<Home />} />
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
+      <Route path="requestService" element={<RequestService />} />
     </Routes>
   </BrowserRouter>
 );
