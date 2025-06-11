@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router";
 
 const RequestService = () => {
+  const Navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -112,6 +114,7 @@ const RequestService = () => {
           Submit Request
         </button>
       </form>
+      <button onClick={()=> Navigate(-1)} className="mt-3 w-full bg-emerald-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Go Back</button>
     </div>
   );
 };

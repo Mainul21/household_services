@@ -34,7 +34,7 @@ const Banner = () => {
           style={{ backgroundImage: `url(${slide.image})` }}
         >
           <div className="bg-transparent bg-opacity-50 p-4 rounded text-white text-center">
-            <h2 className="text-2xl md:text-4xl font-bold">{slide.text}</h2>
+            <h2 className="text-2xl md:text-4xl font-bold bg-black/30 p-4">{slide.text}</h2>
           </div>
           <div className="absolute left-5 right-5 top-1/2 flex justify-between transform -translate-y-1/2">
             <a
