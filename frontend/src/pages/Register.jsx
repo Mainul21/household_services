@@ -1,6 +1,11 @@
 import React, { useState } from "react";
+import useAuth from "../Hooks/useAuth";
+import { useNavigate } from "react-router";
+import { toast } from "react-hot-toast";
 
 const Register = () => {
+  const { createUser, logOut } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -17,7 +22,18 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const toastId = toast.loading("Registering..");
     // Basic validation (add more as needed)
+    if (formData?.password.length < 6) {
+      toast.error("Password is less than 6 characters");
+      return;
+    } else if (!/[A-Z]/.test(formData?.password)) {
+      toast.error("Password don't have a capital letter");
+      return;
+    } else if (!/[!@#$%^&*()_+{}[\]:;<>,.?~\\-]/.test(formData?.password)) {
+      toast.error("Password don't have a special character");
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match");
       return;
@@ -25,15 +41,30 @@ const Register = () => {
 
     console.log("Form Data:", formData);
     // Submit logic here
+    // creatingUser
+    createUser(formData?.email, formData?.password)
+      .then((user) => {
+        toast.success("Registration has been succesful", { id: toastId });
+        console.log(user);
+        logOut();
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-700">
       <div className="bg-white p-8 m-5 rounded-lg shadow-lg w-full max-w-lg">
-        <h2 className="text-2xl font-bold text-center mb-6 text-emerald-500">Register</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-emerald-500">
+          Register
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Full Name</label>
+            <label className="block mb-1 font-medium text-gray-700">
+              Full Name
+            </label>
             <input
               type="text"
               name="fullName"
@@ -45,7 +76,9 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Email</label>
+            <label className="block mb-1 font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -57,7 +90,9 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Phone</label>
+            <label className="block mb-1 font-medium text-gray-700">
+              Phone
+            </label>
             <input
               type="tel"
               name="phone"
@@ -69,7 +104,9 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Address</label>
+            <label className="block mb-1 font-medium text-gray-700">
+              Address
+            </label>
             <input
               type="text"
               name="address"
@@ -81,7 +118,9 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Password</label>
+            <label className="block mb-1 font-medium text-gray-700">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -93,7 +132,9 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Confirm Password</label>
+            <label className="block mb-1 font-medium text-gray-700">
+              Confirm Password
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -105,7 +146,9 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Register As</label>
+            <label className="block mb-1 font-medium text-gray-700">
+              Register As
+            </label>
             <select
               name="userType"
               value={formData.userType}
