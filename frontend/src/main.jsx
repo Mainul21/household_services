@@ -8,19 +8,15 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import { Toaster } from "react-hot-toast";
 import RequestService from "./pages/RequestServices.jsx";
-import AuthProvider from "./Providers/AuthProvider.jsx";
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
   <BrowserRouter>
-    <AuthProvider>
-      <Toaster />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="requestService" element={<RequestService />} />
-      </Routes>
-    </AuthProvider>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+      <Route path="requestService" element={<RequestService />} />
+    </Routes>
   </BrowserRouter>
 );
