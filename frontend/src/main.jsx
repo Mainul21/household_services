@@ -8,6 +8,7 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import RequestService from "./pages/RequestServices.jsx";
 import CustomerDashboard from "./pages/CustomerDashboard.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
@@ -18,6 +19,7 @@ ReactDOM.createRoot(root).render(
       <Route path="register" element={<Register />} />
       <Route path="requestService" element={<RequestService />} />
       <Route path="customer-dashboard" element={<CustomerDashboard />} />
+      <Route path="admin-dashboard" element={<AdminDashboard />} />
     </Routes>
   </BrowserRouter>
 );
