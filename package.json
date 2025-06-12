@@ -1,5 +1,8 @@
 {
-  "dependencies": {
-    "react-hot-toast": "^2.5.2"
+  "name": "household-services",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && npm install && node server.js"
   }
 }
