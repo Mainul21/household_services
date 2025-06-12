@@ -14,7 +14,8 @@ import { auth } from "../Firebase/firebase.config";
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null); // ✅ Role state
   const [loading, setLoading] = useState(true);
   const googleProvider = new GoogleAuthProvider();
 
@@ -39,23 +40,32 @@ const AuthProvider = ({ children }) => {
   // logOut
   const logOut = () => {
     setLoading(true);
+    setRole(null); // clear role on logout
     return signOut(auth);
   };
 
   // using observer
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      setLoading(false);
+
       if (currentUser) {
-        const userInfo = { email: currentUser.email };
-        console.log(userInfo);
+        const email = currentUser.email;
+
+        // 🔁 Example: Fetch role from your backend (replace with real call)
+        try {
+          const res = await fetch(`http://localhost:5000/api/users/role?email=${email}`);
+          const data = await res.json();
+          setRole(data.role); // assume response like { role: "admin" }
+        } catch (error) {
+          console.error("Failed to fetch role:", error);
+        }
       }
     });
 
-    return () => {
-      unsubscribe();
-    };
-  });
+    return () => unsubscribe();
+  }, []);
 
   const authentications = {
     googleLogin,
@@ -63,6 +73,7 @@ const AuthProvider = ({ children }) => {
     signIn,
     logOut,
     user,
+    role,
     loading,
   };
 

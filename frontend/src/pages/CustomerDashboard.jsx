@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router';
+import { useEffect } from 'react';
+import { AuthContext } from '../Providers/AuthProvider';
 
 const CustomerDashboard = () => {
   const [activeTab, setActiveTab] = useState('requests');
+  const { user } = React.useContext(AuthContext);
+  const userEmail = user?.email;
+
 
   return (
     <div className="min-h-screen bg-gray-700 p-6">
@@ -16,7 +21,7 @@ const CustomerDashboard = () => {
       </div>
 
       <div className="bg-trasparent shadow-xl rounded p-6">
-        {activeTab === 'requests' && <MyRequests />}
+        {activeTab === 'requests' && <MyRequests userEmail={userEmail} />}
         {activeTab === 'payment' && <MakePayment />}
         {activeTab === 'review' && <ReviewService />}
         {activeTab === 'new' && <NewRequestForm />}
@@ -25,16 +30,53 @@ const CustomerDashboard = () => {
   );
 };
 
-const MyRequests = () => (
-  <div className=''>
-    <h2 className="text-xl font-semibold mb-4">Your Service Requests</h2>
-    <ul className="space-y-3 text-black">
-      <li className="p-3 bg-gray-100 rounded">Cleaning - Pending</li>
-      <li className="p-3 bg-gray-100 rounded">Plumbing - Completed</li>
-      <li className="p-3 bg-gray-100 rounded">Electrician - In Progress</li>
-    </ul>
-  </div>
-);
+const MyRequests = ({userEmail}) => {
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // const userEmail = "user@example.com"; // TODO: Replace with dynamic logged-in user's email
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/requests/${userEmail}`);
+        const data = await res.json();
+        if (data.success) {
+          setRequests(data.requests);
+        } else {
+          console.error("Failed to fetch requests");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRequests();
+  }, [userEmail]);
+
+  if (loading) return <p className="text-white">Loading your requests...</p>;
+
+  return (
+    <div>
+      <h2 className="text-xl font-semibold mb-4 text-emerald-400">Your Service Requests</h2>
+      <ul className="list-disc space-y-3 text-black">
+        {requests.length > 0 ? (
+          requests.map((req) => (
+            <li key={req._id} className="p-3 bg-gray-100 rounded">
+              {req._id} - {req.serviceType}- {req.preferredDate} - {req.description} - {req.status}
+            </li>
+          ))
+        ) : (
+          <li className="text-white">You have no requests.</li>
+        )}
+      </ul>
+    </div>
+  );
+};
+
+
 
 const MakePayment = () => (
   <div>

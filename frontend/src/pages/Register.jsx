@@ -43,15 +43,44 @@ const Register = () => {
     // Submit logic here
     // creatingUser
     createUser(formData?.email, formData?.password)
-      .then((user) => {
-        toast.success("Registration has been succesful", { id: toastId });
-        console.log(user);
-        logOut();
+  .then((userCredential) => {
+    const user = userCredential.user;
+
+    // Prepare the user data to save in MongoDB
+    const savedUser = {
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      userType: formData.userType,
+      uid: user.uid // Store Firebase UID too
+    };
+
+    // ✅ Send POST request to your backend
+    fetch("http://localhost:5000/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(savedUser),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log("User saved in MongoDB:", data);
+        toast.success("Registration successful", { id: toastId });
+        logOut(); // optional
         navigate("/login");
       })
       .catch((error) => {
-        console.log(error);
+        toast.error("MongoDB save failed");
+        console.error(error);
       });
+  })
+  .catch((error) => {
+    toast.error("Firebase registration failed");
+    console.error(error);
+  });
+
   };
 
   return (
@@ -156,6 +185,7 @@ const Register = () => {
               className="w-full text-black px-4 py-2 border rounded-md focus:ring focus:ring-blue-400"
             >
               <option value="customer">Customer</option>
+              <option value="Admin">Admin</option>
               
               {/* <option value="employee">Employee</option> */}
             </select>

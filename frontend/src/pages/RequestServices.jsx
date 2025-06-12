@@ -17,11 +17,40 @@ const RequestService = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Service Request Submitted:", formData);
-    // You can send `formData` to a backend or Firebase here
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch("http://localhost:5000/api/requests", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert("Service request submitted successfully!");
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+        serviceType: "",
+        preferredDate: "",
+        description: "",
+      });
+    } else {
+      alert("Failed to submit service request.");
+    }
+  } catch (error) {
+    console.error("Error submitting request:", error);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow-md my-10">
